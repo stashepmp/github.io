@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AV Toolkit | 2025 Refresh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-lime: #CCFF00;
+            --charcoal-bg: #121212;
+            --charcoal-card: #1E1E1E;
+            --charcoal-light: #2C2C2C;
+            --text-primary: #E0E0E0;
+            --text-secondary: #AAAAAA;
+            --text-error: #FF6B6B;
+            --glow-shadow: 0 0 15px rgba(204, 255, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--charcoal-bg);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            height: 85vh;
+            max-height: 900px;
+            background-color: var(--charcoal-card);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .main-layout {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: var(--charcoal-bg);
+            padding: 2rem;
+            overflow-y: auto;
+            border-right: 1px solid var(--charcoal-light);
+        }
+
+        .sidebar-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-lime);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-header .logo {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .nav-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-category-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-links a {
+            display: block;
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 30px; /* Pill shape */
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--charcoal-light);
+        }
+
+        .nav-links a.active {
+            background-color: var(--neon-lime);
+            color: var(--charcoal-bg);
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .calculator-card {
+            background-color: var(--charcoal-card);
+        }
+
+        .calculator-card.hidden {
+            display: none;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .calculator-description {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 60ch;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            background-color: var(--charcoal-light);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        input[type="radio"] {
+            accent-color: var(--neon-lime);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-lime);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .calc-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            color: var(--charcoal-bg);
+            background-color: var(--neon-lime);
+            border: none;
+            border-radius: 30px; /* Pill shape */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .calc-button:hover {
+            box-shadow: var(--glow-shadow);
+            transform: translateY(-2px);
+        }
+        
+        .add-button {
+             background-color: transparent;
+             color: var(--neon-lime);
+             border: 2px solid var(--neon-lime);
+        }
+        .add-button:hover {
+            background-color: var(--neon-lime);
+            color: var(--charcoal-bg);
+        }
+
+        .result-container {
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background-color: var(--charcoal-light);
+            border-radius: 8px;
+            border-left: 4px solid var(--neon-lime);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-text, .result-text-multi {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-lime);
+        }
+        
+        .result-text-multi {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .result-text-multi p {
+            margin-bottom: 0.5rem;
+        }
+        .result-text-multi .warn {
+            color: var(--text-error);
+            font-weight: 700;
+        }
+
+        /* Scrollbar styles for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--charcoal-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--charcoal-light);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        @media (max-width: 900px) {
+            body { padding: 0; }
+            .container { height: 100vh; max-height: none; border-radius: 0; }
+            .main-layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--charcoal-light); }
+            .content { padding: 2rem; }
+            h2 { font-size: 2rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="main-layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <span class="logo">⚡</span> AV Toolkit
+                </div>
+                
+                <nav class="nav-links">
+                    <div class="nav-category">
+                        <div class="nav-category-title">Projection</div>
+                        <a href="#brightness-calculator" class="active">Brightness</a>
+                        <a href="#lumens-calculator">Lumens Needed</a>
+                        <a href="#ambient-light-calculator">Max Ambient Light</a>
+                        <a href="#min-screen-diagonal-calculator">Min Screen Diagonal</a>
+                        <a href="#viewing-distance-calculator">Viewing Distance</a>
+                        <a href="#throw-distance-calculator">Throw Distance</a>
+                        <a href="#screen-size-calculator">Screen Size</a>
+                        <a href="#image-height-calculator">Image Height</a>
+                        <a href="#lens-ratio-calculator">Lens Ratio</a>
+                    </div>
+
+                    <div class="nav-category">
+                        <div class="nav-category-title">Video Wall</div>
+                        <a href="#4k-feed-calculator">4K Feed</a>
+                        <a href="#pixel-pitch-calculator">Pixel Pitch</a>
+                    </div>
+                    
+                    <div class="nav-category">
+                        <div class="nav-category-title">TV Display</div>
+                        <a href="#display-size-calculator">Display Size</a>
+                        <a href="#text-visibility-calculator">Text Visibility</a>
+                    </div>
+
+                    <div class="nav-category">
+                        <div class="nav-category-title">AVoIP</div>
+                        <a href="#bandwidth-calculator">Bandwidth</a>
+                    </div>
+
+                    <div class="nav-category">
+                        <div class="nav-category-title">Audio</div>
+                        <a href="#speaker-coverage-calculator">Speaker Coverage</a>
+                        <a href="#amp-load-calculator">70V Amp Load</a>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="content">
+                <div id="brightness-calculator" class="calculator-card">
+                    <h2>Screen Brightness</h2>
+                    <p class="calculator-description">Calculate the required screen brightness in foot-Lamberts (ft-L) based on ambient light conditions and desired contrast.</p>
+                    <div class="form-group">
+                        <label for="ambientFc">Ambient Light (foot-candles)</label>
+                        <input type="number" id="ambientFc" placeholder="e.g., 20">
+                    </div>
+                    <div class="form-group">
+                        <label for="contrastSpec">AVIXA Contrast Spec</label>
+                        <select id="contrastSpec">
+                            <option value="">-- Select a use case --</option>
+                            <option value="7">Passive Viewing (7:1)</option>
+                            <option value="15">Basic Decision Making (15:1)</option>
+                            <option value="50">Analytical Viewing (50:1)</option>
+                            <option value="80">Full Motion Video (80:1)</option>
+                        </select>
+                    </div>
+                    <button onclick="calcBrightness()" class="calc-button">Calculate Brightness</button>
+                    <div class="result-container">
+                        <div class="result-label">Required Brightness</div>
+                        <p id="brightnessResult" class="result-text">0.00 ft-L</p>
+                    </div>
+                </div>
+
+                <div id="lumens-calculator" class="calculator-card hidden">
+                    <h2>Projector Lumens Needed</h2>
+                    <p class="calculator-description">Determine the necessary projector lumen output based on screen size, ambient light, and desired contrast ratio.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="screenDiagonal">Screen Diagonal (inches)</label>
+                            <input type="number" id="screenDiagonal">
+                        </div>
+                        <div class="form-group">
+                            <label for="aspectRatio">Aspect Ratio</label>
+                            <select id="aspectRatio">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ambientFcLumens">Ambient Light (foot-candles)</label>
+                            <input type="number" id="ambientFcLumens">
+                        </div>
+                        <div class="form-group">
+                            <label for="contrastSpecLumens">AVIXA Contrast Spec</label>
+                            <select id="contrastSpecLumens">
+                                <option value="">--Select--</option>
+                                <option value="7">Passive (7:1)</option>
+                                <option value="15">Basic Decision Making (15:1)</option>
+                                <option value="50">Analytical Viewing (50:1)</option>
+                                <option value="80">Full Motion Video (80:1)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcLumens()" class="calc-button">Calculate Lumens</button>
+                    <div class="result-container">
+                        <div class="result-label">Projector Lumens Needed</div>
+                        <p id="lumensResult" class="result-text">0 lumens</p>
+                    </div>
+                </div>
+
+                <div id="ambient-light-calculator" class="calculator-card hidden">
+                    <h2>Max Allowable Ambient Light</h2>
+                    <p class="calculator-description">Find the maximum ambient light (in foot-candles) your environment can have for various contrast scenarios based on your projector and screen.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="projectorLumens">Projector Lumen Output</label>
+                            <input type="number" id="projectorLumens">
+                        </div>
+                        <div class="form-group">
+                            <label for="screenDiagonalAmbient">Screen Diagonal (inches)</label>
+                            <input type="number" id="screenDiagonalAmbient">
+                        </div>
+                         <div class="form-group">
+                            <label for="aspectRatioAmbient">Aspect Ratio</label>
+                            <select id="aspectRatioAmbient">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcAmbientLight()" class="calc-button">Calculate Max Ambient Light</button>
+                    <div class="result-container">
+                        <div class="result-label">Results</div>
+                        <div id="ambientLightResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="min-screen-diagonal-calculator" class="calculator-card hidden">
+                    <h2>Minimum Screen Diagonal</h2>
+                    <p class="calculator-description">Calculate the smallest recommended screen size to maintain legibility for different use cases, given your projector's brightness and ambient light.</p>
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="projectorLumensMinDiagonal">Projector Lumen Output</label>
+                            <input type="number" id="projectorLumensMinDiagonal">
+                        </div>
+                        <div class="form-group">
+                            <label for="ambientFcMinDiagonal">Ambient Light (foot-candles)</label>
+                            <input type="number" id="ambientFcMinDiagonal">
+                        </div>
+                         <div class="form-group">
+                            <label for="aspectRatioMinDiagonal">Aspect Ratio</label>
+                            <select id="aspectRatioMinDiagonal">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcMinScreenDiagonal()" class="calc-button">Calculate Min Diagonal</button>
+                     <div class="result-container">
+                        <div class="result-label">Minimum Recommended Screen Diagonal</div>
+                        <div id="minScreenDiagonalResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="viewing-distance-calculator" class="calculator-card hidden">
+                    <h2>Optimal Viewing Distance</h2>
+                    <p class="calculator-description">Determine the ideal viewing distance range from a screen based on its width and the type of content being displayed.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="screenWidthViewing">Screen Width (inches)</label>
+                            <input type="number" id="screenWidthViewing">
+                        </div>
+                        <div class="form-group">
+                            <label for="contentTypeViewing">Content Type</label>
+                            <select id="contentTypeViewing">
+                                <option value="">--Select--</option>
+                                <option value="text">Text/Graphics</option>
+                                <option value="detailed">Detailed Images</option>
+                                <option value="video">Video/Movies</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcViewingDistance()" class="calc-button">Calculate Viewing Distance</button>
+                    <div class="result-container">
+                        <div class="result-label">Optimal Viewing Distance Range</div>
+                        <p id="viewingDistanceResult" class="result-text"></p>
+                    </div>
+                </div>
+
+                <div id="throw-distance-calculator" class="calculator-card hidden">
+                    <h2>Throw Distance</h2>
+                    <p class="calculator-description">Calculate the required distance between a projector and screen based on the screen width and the projector's lens throw ratio.</p>
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="screenWidthThrow">Screen Width (inches)</label>
+                            <input type="number" id="screenWidthThrow">
+                        </div>
+                        <div class="form-group">
+                           <label for="throwRatioMin">Projector Throw Ratio Minimum</label>
+                           <input type="number" step="0.1" id="throwRatioMin">
+                        </div>
+                        <div class="form-group">
+                           <label for="throwRatioMax">Projector Throw Ratio Maximum</label>
+                           <input type="number" step="0.1" id="throwRatioMax">
+                        </div>
+                         <div class="form-group">
+                            <label for="aspectRatioThrow">Aspect Ratio</label>
+                            <select id="aspectRatioThrow">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcThrowDistance()" class="calc-button">Calculate Throw Distance</button>
+                     <div class="result-container">
+                        <div class="result-label">Throw Distance Range</div>
+                        <p id="throwDistanceResult" class="result-text"></p>
+                    </div>
+                </div>
+                
+                <div id="screen-size-calculator" class="calculator-card hidden">
+                    <h2>Screen Size Recommendation</h2>
+                    <p class="calculator-description">Recommend a screen size based on the farthest viewer's distance and the type of content being shown.</p>
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="viewerDistance">Farthest Viewer Distance (feet)</label>
+                            <input type="number" id="viewerDistance">
+                        </div>
+                        <div class="form-group">
+                           <label for="contentTypeScreen">Content Type</label>
+                            <select id="contentTypeScreen">
+                                <option value="">--Select--</option>
+                                <option value="text">Text/Graphics</option>
+                                <option value="detailed">Detailed Images</option>
+                                <option value="video">Video/Movies</option>
+                            </select>
+                        </div>
+                         <div class="form-group">
+                            <label for="aspectRatioScreen">Aspect Ratio</label>
+                            <select id="aspectRatioScreen">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcScreenSize()" class="calc-button">Calculate Screen Size</button>
+                    <div class="result-container">
+                        <div class="result-label">Recommended Screen Diagonal</div>
+                        <p id="screenSizeResult" class="result-text"></p>
+                    </div>
+                </div>
+
+                <div id="image-height-calculator" class="calculator-card hidden">
+                    <h2>Image Height</h2>
+                    <p class="calculator-description">Calculate the physical height of a projected image and the height of the top of the screen from the floor.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="screenDiagonalHeight">Screen Diagonal (inches)</label>
+                            <input type="number" id="screenDiagonalHeight">
+                        </div>
+                        <div class="form-group">
+                            <label for="aspectRatioHeight">Aspect Ratio</label>
+                            <select id="aspectRatioHeight">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bottomHeight">Bottom of Screen from Floor (feet)</label>
+                            <input type="number" id="bottomHeight">
+                        </div>
+                    </div>
+                    <button onclick="calcImageHeight()" class="calc-button">Calculate Image Height</button>
+                    <div class="result-container">
+                        <div class="result-label">Calculated Heights</div>
+                        <p id="imageHeightResult" class="result-text"></p>
+                    </div>
+                </div>
+                
+                <div id="lens-ratio-calculator" class="calculator-card hidden">
+                    <h2>Lens Ratio Compatibility</h2>
+                    <p class="calculator-description">Determine the required lens throw ratio for your projector based on its distance from the screen and the desired image width.</p>
+                     <div class="form-grid">
+                        <div class="form-group">
+                            <label for="screenWidthLens">Screen Width (inches)</label>
+                            <input type="number" id="screenWidthLens">
+                        </div>
+                        <div class="form-group">
+                            <label for="projectorDistance">Projector-to-Screen Distance (feet)</label>
+                            <input type="number" id="projectorDistance">
+                        </div>
+                         <div class="form-group">
+                            <label for="aspectRatioLens">Aspect Ratio</label>
+                            <select id="aspectRatioLens">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcLensRatio()" class="calc-button">Calculate Lens Ratio</button>
+                    <div class="result-container">
+                        <div class="result-label">Required Lens Ratio</div>
+                        <p id="lensRatioResult" class="result-text"></p>
+                    </div>
+                </div>
+                
+                <div id="4k-feed-calculator" class="calculator-card hidden">
+                     <h2>4K Feed Calculator</h2>
+                     <p class="calculator-description">Calculate the total pixel count of a given resolution and compare it against standard HD and 4K resolutions.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                             <label for="resolutionWidth">Screen Resolution Width (pixels)</label>
+                             <input type="number" id="resolutionWidth">
+                        </div>
+                        <div class="form-group">
+                             <label for="resolutionHeight">Screen Resolution Height (pixels)</label>
+                            <input type="number" id="resolutionHeight">
+                        </div>
+                    </div>
+                     <button onclick="calc4KFeed()" class="calc-button">Calculate Feed</button>
+                     <div class="result-container">
+                         <div class="result-label">Resolution Analysis</div>
+                         <p id="4kFeedResult" class="result-text-multi"></p>
+                         <div id="resolutionGraphic" class="mt-4"></div>
+                     </div>
+                </div>
+
+                <div id="pixel-pitch-calculator" class="calculator-card hidden">
+                    <h2>Pixel Pitch Calculator</h2>
+                    <p class="calculator-description">Determine the required pixel pitch (in mm) for a desired display size to achieve standard resolutions like HD, 4K, or 8K.</p>
+                     <label class="block mb-2 font-semibold">Select Aspect Ratio:</label>
+                    <div class="flex flex-col mb-4">
+                        <label><input type="radio" name="pitch-aspect" value="16:9" checked> 16:9</label>
+                        <label><input type="radio" name="pitch-aspect" value="16:10"> 16:10</label>
+                    </div>
+                    <div id="standardPitchInputs">
+                        <label class="block mb-1">Desired Width (ft-in, e.g., 10-6)</label>
+                        <input type="text" id="pitchWidth" class="w-full p-3 mb-4">
+                    </div>
+                    <div id="customPitchInputs" class="hidden">
+                        </div>
+                    <button onclick="calcPixelPitch()" class="calc-button">Calculate Pixel Pitch</button>
+                    <div class="result-container">
+                         <div class="result-label">Recommended Pixel Pitch</div>
+                         <div id="pixelPitchResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="display-size-calculator" class="calculator-card hidden">
+                     <h2>Display Size Calculator</h2>
+                     <p class="calculator-description">Calculate the minimum recommended display size based on AVIXA's DISCAS standards for viewing distance and use case.</p>
+                    <div class="form-grid">
+                         <div class="form-group">
+                             <label for="farthestViewer">Farthest Viewer (feet)</label>
+                             <input type="number" id="farthestViewer">
+                         </div>
+                         <div class="form-group">
+                              <label for="useCase">Use Case</label>
+                              <select id="useCase">
+                                <option value="">--Select--</option>
+                                <option value="ADM">Analytical Decision Making</option>
+                                <option value="BDM">Basic Decision Making</option>
+                              </select>
+                         </div>
+                    </div>
+                    <button onclick="calcDisplaySize()" class="calc-button">Calculate Display Size</button>
+                    <div class="result-container">
+                         <div class="result-label">Display Recommendations</div>
+                         <div id="displaySizeResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="text-visibility-calculator" class="calculator-card hidden">
+                    <h2>Text Visibility Calculator</h2>
+                    <p class="calculator-description">Calculate how large the text will appear on the screen and how many lines of text can be shown if the text is single spaced or double spaced.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="textDiagonal">Display Size (diagonal)</label>
+                            <input type="number" id="textDiagonal">
+                        </div>
+                        <div class="form-group">
+                            <label for="textAspectRatio">Aspect Ratio</label>
+                            <select id="textAspectRatio">
+                                <option value="">--Select--</option>
+                                <option value="16:9">16:9</option>
+                                <option value="16:10">16:10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="textFontSize">Font Size</label>
+                            <input type="number" id="textFontSize">
+                        </div>
+                        <div class="form-group">
+                            <label for="textDistance">Distance from screen</label>
+                            <input type="number" id="textDistance">
+                        </div>
+                    </div>
+                    <button onclick="calcTextVisibility()" class="calc-button">Calculate</button>
+                    <div class="result-container">
+                        <div class="result-label">Results</div>
+                        <div id="textVisibilityResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="bandwidth-calculator" class="calculator-card hidden">
+                    <h2>AVoIP Bandwidth</h2>
+                    <p class="calculator-description">Estimate the total network bandwidth required for a given number of AVoIP streams at various resolutions and compression types.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                             <label for="bandwidthResolution">Resolution</label>
+                             <select id="bandwidthResolution">
+                                <option value="">--Select--</option>
+                                <option value="720p">720p (1280x720)</option>
+                                <option value="1080p">1080p (1920x1080)</option>
+                                <option value="4K">4K (3840x2160)</option>
+                             </select>
+                        </div>
+                        <div class="form-group">
+                             <label for="bandwidthFps">Frame Rate (fps)</label>
+                             <input type="number" id="bandwidthFps" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label for="bandwidthCompression">Compression Type</label>
+                             <select id="bandwidthCompression">
+                                <option value="">--Select--</option>
+                                <option value="h264">H.264</option>
+                                <option value="h265">H.265</option>
+                                <option value="jpeg2000">JPEG2000</option>
+                             </select>
+                        </div>
+                        <div class="form-group">
+                             <label for="bandwidthQuantity">Number of Streams</label>
+                             <input type="number" id="bandwidthQuantity" value="1">
+                        </div>
+                    </div>
+                     <button onclick="calcBandwidth()" class="calc-button">Calculate Bandwidth</button>
+                     <div class="result-container">
+                         <div class="result-label">Estimated Total Bandwidth</div>
+                         <p id="bandwidthResult" class="result-text"></p>
+                     </div>
+                </div>
+
+                <div id="speaker-coverage-calculator" class="calculator-card hidden">
+                     <h2>Speaker Coverage</h2>
+                     <p class="calculator-description">Calculate the coverage diameter of a single ceiling speaker and determine how many speakers are needed to cover a room.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                             <label for="speakerAngle">Speaker Dispersion Angle (degrees)</label>
+                             <input type="number" id="speakerAngle" value="90">
+                        </div>
+                        <div class="form-group">
+                             <label for="speakerHeight">Mounting Height (feet)</label>
+                             <input type="number" id="speakerHeight" value="10">
+                        </div>
+                         <div class="form-group">
+                             <label for="roomWidthAudio">Room Width (feet)</label>
+                             <input type="number" id="roomWidthAudio">
+                         </div>
+                         <div class="form-group">
+                             <label for="roomDepth">Room Depth (feet)</label>
+                             <input type="number" id="roomDepth">
+                         </div>
+                    </div>
+                    <button onclick="calcSpeakerCoverage()" class="calc-button">Calculate Coverage</button>
+                     <div class="result-container">
+                         <div class="result-label">Coverage Analysis</div>
+                         <div id="speakerCoverageResult" class="result-text-multi"></div>
+                     </div>
+                </div>
+
+                <div id="amp-load-calculator" class="calculator-card hidden">
+                    <h2>70V Amp Load</h2>
+                    <p class="calculator-description">Calculate the total load on a 70V amplifier based on the quantity and tap settings of connected speakers.</p>
+                    <div class="form-group">
+                        <label for="ampWattage">Amplifier Wattage (W)</label>
+                        <input type="number" id="ampWattage">
+                    </div>
+                    <div id="speakerInputs">
+                        <div class="form-grid speaker-group">
+                            <div class="form-group">
+                                <label>Quantity of Speakers</label>
+                                <input type="number" class="speakerQty">
+                            </div>
+                            <div class="form-group">
+                                <label>Tap Setting per Speaker (W)</label>
+                                <input type="number" class="speakerTap">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <button onclick="addSpeakerGroup()" class="calc-button add-button">Add Speaker Group</button>
+                        <button onclick="calcAmpLoad()" class="calc-button">Calculate Load</button>
+                    </div>
+                    <div class="result-container">
+                         <div class="result-label">Amplifier Load Analysis</div>
+                         <div id="ampLoadResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    
+<script>
+        // --- VIEW SWITCHING LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const calculatorCards = document.querySelectorAll('.calculator-card');
+
+            
+function switchView(targetId) {
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${targetId}`) {
+            link.classList.add('active');
+        }
+    });
+
+    calculatorCards.forEach(card => {
+        if (card.id === targetId) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+}
+
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    switchView(targetId);
+                });
+            });
+
+            const initialActiveLink = document.querySelector('.nav-links a.active');
+            if (initialActiveLink) {
+                const initialTargetId = initialActiveLink.getAttribute('href').substring(1);
+                switchView(initialTargetId);
+            }
+        });
+
+        // --- ALL CALCULATION FUNCTIONS FROM ORIGINAL FILE ---
+        
+        // Helper to show alerts in a non-blocking way
+        function showDynamicAlert(message, elementId) {
+            const resultElement = document.getElementById(elementId);
+            if(resultElement) {
+                resultElement.innerHTML = `<p class='warn'>${message}</p>`;
+            } else {
+                alert(message); // Fallback
+            }
+        }
+        
+        // Brightness Calculator
+        function calcBrightness() {
+          const ambientFc = parseFloat(document.getElementById('ambientFc').value);
+          const contrastSpec = parseFloat(document.getElementById('contrastSpec').value);
+          const resultElement = document.getElementById('brightnessResult');
+          if (isNaN(ambientFc) || isNaN(contrastSpec)) { return showDynamicAlert("Please enter valid numbers and select a contrast spec.", "brightnessResult"); }
+          if (ambientFc < 0) { return showDynamicAlert("Ambient light cannot be negative.", "brightnessResult");}
+          const brightness = ambientFc * contrastSpec;
+          resultElement.innerText = `${brightness.toFixed(2)} ft-L`;
+        }
+
+        // Lumens Calculator
+        function calcLumens() {
+          const screenDiagonal = parseFloat(document.getElementById('screenDiagonal').value);
+          const aspectRatio = document.getElementById('aspectRatio').value;
+          const ambientFc = parseFloat(document.getElementById('ambientFcLumens').value);
+          const contrastSpec = parseFloat(document.getElementById('contrastSpecLumens').value);
+          const resultElement = document.getElementById('lumensResult');
+          if (isNaN(screenDiagonal) || isNaN(ambientFc) || isNaN(contrastSpec) || aspectRatio === "") { return showDynamicAlert("Please fill in all fields.", "lumensResult");}
+          if (screenDiagonal <= 0 || ambientFc < 0) { return showDynamicAlert("Screen diagonal must be positive and ambient light cannot be negative.", "lumensResult");}
+          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+          const screenHeight = screenDiagonal / Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) * heightRatio;
+          const screenWidth = screenDiagonal / Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) * widthRatio;
+          const screenAreaSqFt = (screenWidth * screenHeight) / 144;
+          const requiredFootLamberts = ambientFc * contrastSpec;
+          const requiredLumens = requiredFootLamberts * screenAreaSqFt;
+          resultElement.innerText = `${requiredLumens.toFixed(0)} lumens`;
+        }
+
+        // Ambient Light Calculator
+        function calcAmbientLight() {
+          const projectorLumens = parseFloat(document.getElementById('projectorLumens').value);
+          const screenDiagonal = parseFloat(document.getElementById('screenDiagonalAmbient').value);
+          const aspectRatio = document.getElementById('aspectRatioAmbient').value;
+          const resultElement = document.getElementById('ambientLightResult');
+          if (isNaN(projectorLumens) || isNaN(screenDiagonal) || aspectRatio === "") { return showDynamicAlert("Please fill in all fields.", "ambientLightResult"); }
+          if (projectorLumens <= 0 || screenDiagonal <= 0) { return showDynamicAlert("Projector lumens and screen diagonal must be positive.", "ambientLightResult"); }
+          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+          const screenHeight = screenDiagonal / Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) * heightRatio;
+          const screenWidth = screenDiagonal / Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) * widthRatio;
+          const screenAreaSqFt = (screenWidth * screenHeight) / 144;
+          const footLamberts = projectorLumens / screenAreaSqFt;
+          let resultHtml = `<p>Calculated Screen Brightness: ${footLamberts.toFixed(2)} ft-L</p>`;
+          resultHtml += `<p>Max for Passive (7:1): <strong>${(footLamberts / 7).toFixed(2)} fc</strong></p>`;
+          resultHtml += `<p>Max for Basic Decision (15:1): <strong>${(footLamberts / 15).toFixed(2)} fc</strong></p>`;
+          resultHtml += `<p>Max for Analytical (50:1): <strong>${(footLamberts / 50).toFixed(2)} fc</strong></p>`;
+          resultHtml += `<p>Max for Video (80:1): <strong>${(footLamberts / 80).toFixed(2)} fc</strong></p>`;
+          resultElement.innerHTML = resultHtml;
+        }
+
+        // Minimum Recommended Screen Diagonal Calculator
+        function calcMinScreenDiagonal() {
+          const projectorLumens = parseFloat(document.getElementById('projectorLumensMinDiagonal').value);
+          const ambientFc = parseFloat(document.getElementById('ambientFcMinDiagonal').value);
+          const aspectRatio = document.getElementById('aspectRatioMinDiagonal').value;
+          const resultElement = document.getElementById('minScreenDiagonalResult');
+          if (isNaN(projectorLumens) || isNaN(ambientFc) || aspectRatio === "") { return showDynamicAlert("Please fill in all fields.", "minScreenDiagonalResult"); }
+          if (projectorLumens <= 0 || ambientFc < 0) { return showDynamicAlert("Projector lumens must be positive and ambient light cannot be negative.", "minScreenDiagonalResult");}
+          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+          const calculateDiagonal = (contrastRatio) => {
+            const requiredFootLamberts = ambientFc * contrastRatio;
+            if (requiredFootLamberts <= 0) return "N/A";
+            const screenAreaSqFt = projectorLumens / requiredFootLamberts;
+            const screenAreaSqIn = screenAreaSqFt * 144;
+            const diagonal = Math.sqrt(screenAreaSqIn / (widthRatio * heightRatio)) * Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2));
+            return `${diagonal.toFixed(1)} inches`;
+          };
+          let resultHtml = `<p>For Passive (7:1): <strong>${calculateDiagonal(7)}</strong></p>`;
+          resultHtml += `<p>For Basic Decision (15:1): <strong>${calculateDiagonal(15)}</strong></p>`;
+          resultHtml += `<p>For Analytical (50:1): <strong>${calculateDiagonal(50)}</strong></p>`;
+          resultHtml += `<p>For Video (80:1): <strong>${calculateDiagonal(80)}</strong></p>`;
+          resultElement.innerHTML = resultHtml;
+        }
+
+        // Optimal Viewing Distance Calculator
+        function calcViewingDistance() {
+          const screenWidth = parseFloat(document.getElementById('screenWidthViewing').value);
+          const contentType = document.getElementById('contentTypeViewing').value;
+          const resultElement = document.getElementById('viewingDistanceResult');
+          if (isNaN(screenWidth) || contentType === "") { return showDynamicAlert("Please fill in all fields.", "viewingDistanceResult"); }
+          if (screenWidth <= 0) { return showDynamicAlert("Screen width must be positive.", "viewingDistanceResult");}
+          let minDistance, maxDistance;
+          if (contentType === "text") { minDistance = screenWidth * 1.5; maxDistance = screenWidth * 6; }
+          else if (contentType === "detailed") { minDistance = screenWidth * 1; maxDistance = screenWidth * 4; }
+          else if (contentType === "video") { minDistance = screenWidth * 0.8; maxDistance = screenWidth * 3; }
+          else { return showDynamicAlert("Invalid content type selected.", "viewingDistanceResult"); }
+          resultElement.innerText = `${minDistance.toFixed(1)} to ${maxDistance.toFixed(1)} inches`;
+        }
+
+        // Throw Distance Calculator
+        function calcThrowDistance() {
+          const screenWidth = parseFloat(document.getElementById('screenWidthThrow').value);
+          const throwRatioMin = parseFloat(document.getElementById('throwRatioMin').value);
+          const throwRatioMax = parseFloat(document.getElementById('throwRatioMax').value);
+          const resultElement = document.getElementById('throwDistanceResult');
+          if (isNaN(screenWidth) || isNaN(throwRatioMin) || isNaN(throwRatioMax)) { return showDynamicAlert("Please fill in all fields.", "throwDistanceResult");}
+          if (screenWidth <= 0 || throwRatioMin <= 0 || throwRatioMax <= 0) { return showDynamicAlert("All input values must be positive.", "throwDistanceResult");}
+          if (throwRatioMin > throwRatioMax) { return showDynamicAlert("Minimum throw ratio cannot be greater than maximum.", "throwDistanceResult"); }
+          const minThrowDistance = (screenWidth / 12) * throwRatioMin;
+          const maxThrowDistance = (screenWidth / 12) * throwRatioMax;
+          resultElement.innerText = `${minThrowDistance.toFixed(2)} ft to ${maxThrowDistance.toFixed(2)} ft`;
+        }
+
+        // Screen Size Recommendation Calculator
+        function calcScreenSize() {
+          const viewerDistance = parseFloat(document.getElementById('viewerDistance').value);
+          const contentType = document.getElementById('contentTypeScreen').value;
+          const aspectRatio = document.getElementById('aspectRatioScreen').value;
+          const resultElement = document.getElementById('screenSizeResult');
+          if (isNaN(viewerDistance) || contentType === "" || aspectRatio === "") { return showDynamicAlert("Please fill in all fields.", "screenSizeResult");}
+          if (viewerDistance <= 0) { return showDynamicAlert("Viewer distance must be positive.", "screenSizeResult"); }
+          let heightRatioFactor;
+          if (contentType === "text") { heightRatioFactor = 6; }
+          else if (contentType === "detailed") { heightRatioFactor = 4; }
+          else if (contentType === "video") { heightRatioFactor = 3; }
+          else { return showDynamicAlert("Invalid content type selected.", "screenSizeResult");}
+          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+          const imageHeightFt = viewerDistance / heightRatioFactor;
+          const imageHeightIn = imageHeightFt * 12;
+          const screenDiagonalIn = imageHeightIn * Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) / heightRatio;
+          resultElement.innerText = `${screenDiagonalIn.toFixed(1)} inches`;
+        }
+
+        // Image Height Calculator
+        function calcImageHeight() {
+          const screenDiagonal = parseFloat(document.getElementById('screenDiagonalHeight').value);
+          const aspectRatio = document.getElementById('aspectRatioHeight').value;
+          const bottomHeightFt = parseFloat(document.getElementById('bottomHeight').value);
+          const resultElement = document.getElementById('imageHeightResult');
+          if (isNaN(screenDiagonal) || isNaN(bottomHeightFt) || aspectRatio === "") { return showDynamicAlert("Please fill in all fields.", "imageHeightResult"); }
+          if (screenDiagonal <= 0 || bottomHeightFt < 0) { return showDynamicAlert("Screen diagonal must be positive and bottom height cannot be negative.", "imageHeightResult"); }
+          const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+          const imageHeightIn = screenDiagonal / Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) * heightRatio;
+          const screenTopHeightFt = bottomHeightFt + (imageHeightIn / 12);
+          resultElement.innerText = `Image: ${imageHeightIn.toFixed(1)} in tall. Top of screen: ${screenTopHeightFt.toFixed(1)} ft high.`;
+        }
+        
+        // Lens Ratio Compatibility Checker
+        function calcLensRatio() {
+          const screenWidth = parseFloat(document.getElementById('screenWidthLens').value);
+          const projectorDistance = parseFloat(document.getElementById('projectorDistance').value);
+          const resultElement = document.getElementById('lensRatioResult');
+          if (isNaN(screenWidth) || isNaN(projectorDistance)) { return showDynamicAlert("Please fill in all fields.", "lensRatioResult");}
+          if (screenWidth <= 0 || projectorDistance <= 0) { return showDynamicAlert("Screen width and projector distance must be positive.", "lensRatioResult"); }
+          const screenWidthFt = screenWidth / 12;
+          const lensRatio = projectorDistance / screenWidthFt;
+          resultElement.innerText = `${lensRatio.toFixed(2)}:1`;
+        }
+        
+        // 4K Feed Calculator
+        
+
+function calc4KFeed() {
+    const width = parseInt(document.getElementById('resolutionWidth').value);
+    const height = parseInt(document.getElementById('resolutionHeight').value);
+    const resultElement = document.getElementById('4kFeedResult');
+    const graphicElement = document.getElementById('resolutionGraphic');
+    if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+        return showDynamicAlert("Please enter valid width and height.", "4kFeedResult");
+    }
+    const total_pixels = width * height;
+    const total_mp = (total_pixels / 1000000).toFixed(3);
+    const max_pixels_per_feed = 3840 * 2160;
+    const max_h_per_feed = Math.floor(max_pixels_per_feed / width);
+    const num_feeds = Math.ceil(height / max_h_per_feed);
+    let feeds = [];
+    let remaining = height;
+    for (let i = 0; i < num_feeds; i++) {
+        const h_feed = Math.min(max_h_per_feed, remaining);
+        feeds.push(h_feed);
+        remaining -= h_feed;
+    }
+    const colors = ['#CCFF00', '#A3E635'];
+    let text_html = `<p>Total Megapixels: ${total_mp} MP</p>`;
+    feeds.forEach((h_feed, index) => {
+        const mp_feed = (width * h_feed / 1000000).toFixed(3);
+        text_html += `<p>Feed ${index + 1}: ${mp_feed} MP (${width}x${h_feed})</p>`;
+    });
+    text_html += `<p>Total 4K Feeds Required: ${num_feeds}</p>`;
+    let visual_html = `<div style="width: 200px; height: 200px; display: flex; flex-direction: column; border: 1px solid #ccc;">`;
+    feeds.forEach((h_feed, index) => {
+        const percent = (h_feed / height * 100).toFixed(2);
+        visual_html += `<div style="height: ${percent}%; background-color: ${colors[index % colors.length]}; display: flex; align-items: center; justify-content: center; color: black;">${width}x${h_feed}</div>`;
+    });
+    visual_html += `</div>`;
+    resultElement.innerHTML = text_html;
+    graphicElement.innerHTML = visual_html;
+}
+
+
+    function addSpeakerGroup() {
+          const container = document.getElementById('speakerInputs');
+          const group = document.createElement('div');
+          group.className = 'form-grid speaker-group';
+          group.innerHTML = `
+            <div class="form-group">
+                <label>Quantity of Speakers</label>
+                <input type="number" class="speakerQty">
+            </div>
+            <div class="form-group">
+                <label>Tap Setting per Speaker (W)</label>
+                <input type="number" class="speakerTap">
+            </div>
+          `;
+          container.appendChild(group);
+        }
+        function calcAmpLoad() {
+          const ampWattage = parseFloat(document.getElementById('ampWattage').value);
+          const resultElement = document.getElementById('ampLoadResult');
+          if (isNaN(ampWattage) || ampWattage <= 0) { return showDynamicAlert("Please enter a valid amplifier wattage.", "ampLoadResult"); }
+          const qtyFields = document.querySelectorAll('.speakerQty');
+          const tapFields = document.querySelectorAll('.speakerTap');
+          let totalLoad = 0;
+          for (let i = 0; i < qtyFields.length; i++) {
+            const qty = parseFloat(qtyFields[i].value);
+            const tap = parseFloat(tapFields[i].value);
+            if (!isNaN(qty) && !isNaN(tap)) { totalLoad += qty * tap; }
+          }
+          const percentUsed = (totalLoad / ampWattage) * 100;
+          let resultHtml = `<p>Total Speaker Load: <strong>${totalLoad.toFixed(1)} W</strong></p>`;
+          resultHtml += `<p>Amplifier Capacity Used: <strong>${percentUsed.toFixed(1)}%</strong></p>`;
+          if (percentUsed > 80) { resultHtml += `<p class='warn'>Warning: Load exceeds 80% of amplifier capacity!</p>`; }
+          if (percentUsed > 100) { resultHtml = `<p class='warn'>Error: Load exceeds 100% of amplifier capacity!</p>`; }
+          resultElement.innerHTML = resultHtml;
+        }
+
+        // Speaker Coverage Calculator
+        function calcSpeakerCoverage() {
+            const speakerAngle = parseFloat(document.getElementById('speakerAngle').value);
+            const speakerHeight = parseFloat(document.getElementById('speakerHeight').value);
+            const roomWidth = parseFloat(document.getElementById('roomWidthAudio').value);
+            const roomDepth = parseFloat(document.getElementById('roomDepth').value);
+            const resultElement = document.getElementById('speakerCoverageResult');
+
+            if (isNaN(speakerAngle) || isNaN(speakerHeight) || isNaN(roomWidth) || isNaN(roomDepth)) { return showDynamicAlert("Please fill in all fields.", "speakerCoverageResult"); }
+            if (speakerAngle <= 0 || speakerHeight <= 0 || roomWidth <= 0 || roomDepth <= 0) { return showDynamicAlert("All input values must be positive.", "speakerCoverageResult"); }
+            
+            const coverageRadius = speakerHeight * Math.tan(speakerAngle / 2 * Math.PI / 180);
+            const coverageDiameter = coverageRadius * 2;
+            const speakerArea = Math.PI * Math.pow(coverageRadius, 2);
+            const roomArea = roomWidth * roomDepth;
+            const speakersNeeded = Math.ceil(roomArea / speakerArea);
+            
+            let resultHtml = `<p>Single Speaker Coverage Diameter: <strong>${coverageDiameter.toFixed(1)} feet</strong></p>`;
+            resultHtml += `<p>Estimated Speakers for Room: <strong>${speakersNeeded}</strong></p>`;
+            resultElement.innerHTML = resultHtml;
+        }
+
+        // TV Display Calculator (Updated)
+        function calcDisplaySize() {
+            const farthestViewerFt = parseFloat(document.getElementById('farthestViewer').value);
+            const useCase = document.getElementById('useCase').value;
+            const resultElement = document.getElementById('displaySizeResult');
+
+            if (isNaN(farthestViewerFt) || useCase === "") {
+                return showDynamicAlert("Please fill in farthest viewer and use case.", "displaySizeResult");
+            }
+            if (farthestViewerFt <= 0) {
+                return showDynamicAlert("Viewer distance must be positive.", "displaySizeResult");
+            }
+            
+            let minImageHeightFt;
+            // Using AVIXA D301.01:2018 standards for image height
+            if (useCase === "ADM") {
+                minImageHeightFt = farthestViewerFt / 6; 
+            } else if (useCase === "BDM") {
+                minImageHeightFt = farthestViewerFt / 8; 
+            } else {
+                return showDynamicAlert("Invalid use case selected.", "displaySizeResult");
+            }
+
+            const minImageHeightIn = minImageHeightFt * 12;
+            // Assuming 16:9 aspect ratio for TV displays
+            const diagonalIn = minImageHeightIn * Math.sqrt(16*16 + 9*9) / 9;
+
+            // Calculate recommended minimum text height based on visual acuity (arc-minutes)
+            const arcMinuteToRadians = Math.PI / (180 * 60);
+            let recommendedTextHeightInches;
+            if (useCase === "ADM") {
+                // Based on 10 arc-minutes for Analytical Decision Making
+                recommendedTextHeightInches = farthestViewerFt * 12 * Math.tan(10 * arcMinuteToRadians);
+            } else { // BDM
+                // Based on 15 arc-minutes for Basic Decision Making
+                recommendedTextHeightInches = farthestViewerFt * 12 * Math.tan(15 * arcMinuteToRadians);
+            }
+
+            // Calculate suggested font size in points (72 points per inch)
+            const suggestedFontSizePoints = recommendedTextHeightInches * 72;
+
+            let resultHtml = `<p>Min. Image Height: <strong>${minImageHeightFt.toFixed(1)} ft (${minImageHeightIn.toFixed(1)} in)</strong></p>`;
+            resultHtml += `<p>Rec. 16:9 Diagonal: <strong>${diagonalIn.toFixed(1)} inches</strong></p>`;
+            resultHtml += `<p>Min. Text Height: <strong>${recommendedTextHeightInches.toFixed(2)} inches</strong></p>`;
+            resultHtml += `<p>Rec. Font Size: <strong>${suggestedFontSizePoints.toFixed(0)} points</strong></p>`;
+            resultElement.innerHTML = resultHtml;
+        }
+
+        // AVoIP Bandwidth (Simplified educational model)
+        function calcBandwidth() {
+            const resolution = document.getElementById('bandwidthResolution').value;
+            const fps = parseFloat(document.getElementById('bandwidthFps').value);
+            const compression = document.getElementById('bandwidthCompression').value;
+            const quantity = parseFloat(document.getElementById('bandwidthQuantity').value);
+            const resultElement = document.getElementById('bandwidthResult');
+
+            if (!resolution || isNaN(fps) || !compression || isNaN(quantity)) {
+                return showDynamicAlert("Please fill in all fields.", "bandwidthResult");
+            }
+
+            let baseRate; // Mbps per stream
+            switch(resolution) {
+                case '720p': baseRate = 3; break;
+                case '1080p': baseRate = 5; break;
+                case '4K': baseRate = 15; break;
+                default: baseRate = 5;
+            }
+            
+            let compressionMultiplier;
+            switch(compression) {
+                case 'h264': compressionMultiplier = 1; break;
+                case 'h265': compressionMultiplier = 0.6; break; // ~40% more efficient
+                case 'jpeg2000': compressionMultiplier = 2.5; break; // Less efficient for this purpose
+                default: compressionMultiplier = 1;
+            }
+
+            const frameRateMultiplier = fps / 30;
+            const singleStreamBw = baseRate * compressionMultiplier * frameRateMultiplier;
+            const totalBw = singleStreamBw * quantity;
+            
+            resultElement.innerText = `${totalBw.toFixed(2)} Mbps`;
+        }
+
+        // Pixel Pitch logic
+        function calcPixelPitch() {
+            const width_str = document.getElementById('pitchWidth').value;
+            const aspect = document.querySelector('input[name="pitch-aspect"]:checked').value;
+            const resultElement = document.getElementById('pixelPitchResult');
+            if (!width_str) {
+                return showDynamicAlert("Please enter desired width.", "pixelPitchResult");
+            }
+            const parts = width_str.split('-');
+            const ft = parseInt(parts[0]) || 0;
+            const inch = parseInt(parts[1]) || 0;
+            const width_ft = ft + inch / 12;
+            const width_mm = width_ft * 304.8;
+            let ar_w, ar_h;
+            if (aspect === '16:9') {
+                ar_w = 16;
+                ar_h = 9;
+            } else {
+                ar_w = 16;
+                ar_h = 10;
+            }
+            const resolutions = {
+                'HD': 1920,
+                '4K': 3840,
+                '8K': 7680
+            };
+            let result_html = '';
+            for (const [res, nx] of Object.entries(resolutions)) {
+                const pitch = (width_mm / nx).toFixed(2);
+                result_html += `<p>${res}: ${pitch} mm</p>`;
+            }
+            resultElement.innerHTML = result_html;
+        }
+
+        function calcTextVisibility() {
+            const diagonal = parseFloat(document.getElementById('textDiagonal').value);
+            const aspect = document.getElementById('textAspectRatio').value;
+            const font_size = parseFloat(document.getElementById('textFontSize').value);
+            const distance_ft = parseFloat(document.getElementById('textDistance').value);
+            const resultElement = document.getElementById('textVisibilityResult');
+            if (isNaN(diagonal) || aspect === '' || isNaN(font_size) || isNaN(distance_ft)) {
+                return showDynamicAlert("Please fill in all fields.", "textVisibilityResult");
+            }
+            let ar_w, ar_h;
+            if (aspect === '16:9') {
+                ar_w = 16;
+                ar_h = 9;
+            } else {
+                ar_w = 16;
+                ar_h = 10;
+            }
+            const hypot = Math.sqrt(ar_w ** 2 + ar_h ** 2);
+            const height_in = diagonal * (ar_h / hypot);
+            const text_height_in = font_size / 72;
+            const distance_in = distance_ft * 12;
+            const angular_deg = Math.atan(text_height_in / distance_in) * (180 / Math.PI);
+            const angular_min = angular_deg * 60;
+            const single_line_height = text_height_in * 1.2;
+            const double_line_height = text_height_in * 2.0;
+            const num_single = Math.floor(height_in / single_line_height);
+            const num_double = Math.floor(height_in / double_line_height);
+            let result_html = `<p>Physical text height on screen: ${text_height_in.toFixed(2)} inches</p>`;
+            result_html += `<p>The text appears to subtend ${angular_min.toFixed(2)} arcminutes at ${distance_ft} feet.</p>`;
+            result_html += `<p>Maximum single-spaced lines: ${num_single}</p>`;
+            result_html += `<p>Maximum double-spaced lines: ${num_double}</p>`;
+            resultElement.innerHTML = result_html;
+        }
+
+
+    </script>
+</body>
+</html>
