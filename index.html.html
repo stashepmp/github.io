@@ -261,6 +261,11 @@
         }
 
     </style>
+    <link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="AV Toolkit">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 
@@ -1226,5 +1231,12 @@ function calc4KFeed() {
 
 
     </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch((err) => console.error('Service Worker registration failed', err));
+  }
+</script>
 </body>
 </html>
