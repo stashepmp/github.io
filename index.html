@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -251,6 +251,23 @@
             background: var(--text-secondary);
         }
 
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--neon-lime);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .sidebar.collapsed {
+            display: none;
+        }
+
        @media (max-width: 900px) {
             body { padding: 0; }
             .container { height: 100vh; max-height: none; border-radius: 0; }
@@ -279,6 +296,7 @@
             <aside class="sidebar">
                 <div class="sidebar-header">
                     <span class="logo">⚡</span> AV Toolkit
+                    <button id="menuToggle" class="menu-toggle">☰</button>
                 </div>
                 
                 <nav class="nav-links">
@@ -1635,6 +1653,59 @@ function calc4KFeed() {
             const spl = sens + 10 * Math.log10(power) - 20 * Math.log10(dist);
             resultElement.innerText = `${spl.toFixed(2)} dB SPL`;
         }
+    document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const calculatorCards = document.querySelectorAll('.calculator-card');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    function switchView(targetId) {
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${targetId}`) {
+                link.classList.add('active');
+            }
+        });
+
+        calculatorCards.forEach(card => {
+            if (card.id === targetId) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            switchView(targetId);
+            if (window.innerWidth <= 900) {
+                sidebar.classList.add('collapsed');
+            }
+        });
+    });
+
+    const initialActiveLink = document.querySelector('.nav-links a.active');
+    if (initialActiveLink) {
+        const initialTargetId = initialActiveLink.getAttribute('href').substring(1);
+        switchView(initialTargetId);
+    }
+
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
+
+    // Adjust menu state on resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) {
+            sidebar.classList.remove('collapsed');
+        } else if (!sidebar.classList.contains('collapsed')) {
+            sidebar.classList.add('collapsed');
+        }
+    });
+});
 
     </script>
 </body>
