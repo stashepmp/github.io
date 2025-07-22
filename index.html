@@ -97,7 +97,6 @@
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
         .nav-links a:hover {
@@ -256,32 +255,12 @@
             body { padding: 0; }
             .container { height: 100vh; max-height: none; border-radius: 0; }
             .main-layout { flex-direction: column; }
-            .sidebar { 
-                width: 100%; 
-                height: auto; 
-                border-right: none; 
-                border-bottom: 1px solid var(--charcoal-light);
-                max-height: 25vh;
-                overflow-y: auto;
-                padding: 1rem;
-            }
-            .content { 
-            padding: 1.5rem; 
-            flex: 1; 
-            min-height: 70vh; 
-            overflow-y: auto; 
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--charcoal-light); }
+            .content { padding: 2rem; }
+            h2 { font-size: 2rem; }
         }
-    h2 { font-size: 1.8rem; }
-    .nav-category-title { font-size: 0.65rem; }
-    .nav-links a { font-size: 0.8rem; padding: 0.4rem 0.8rem; margin-bottom: 0.3rem; }
-}
 
     </style>
-    <link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="AV Toolkit">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 
@@ -327,6 +306,16 @@
                         <div class="nav-category-title">Audio</div>
                         <a href="#speaker-coverage-calculator">Speaker Coverage</a>
                         <a href="#amp-load-calculator">70V Amp Load</a>
+                        <a href="#speaker-impedance-calculator">Speaker Impedance</a>
+                        <a href="#decibel-change-calculator">Decibel Change</a>
+                        <a href="#spl-calculator">SPL at Distance</a>
+                    </div>
+
+                    <div class="nav-category">
+                        <div class="nav-category-title">Power</div>
+                        <a href="#power-calculator">Power (120VAC)</a>
+                        <a href="#ohms-law-calculator">Ohm's Law</a>
+                        <a href="#voltage-drop-calculator">Voltage Drop</a>
                     </div>
                 </nav>
             </aside>
@@ -789,6 +778,213 @@
                     </div>
                 </div>
 
+                <div id="speaker-impedance-calculator" class="calculator-card hidden">
+                    <h2>Speaker Impedance</h2>
+                    <p class="calculator-description">Calculate total impedance for identical speakers in series or parallel.</p>
+                    <div class="form-group">
+                        <label>Configuration:</label>
+                        <input type="radio" id="impSeries" name="impConfig" value="series"> Series<br>
+                        <input type="radio" id="impParallel" name="impConfig" value="parallel"> Parallel<br>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Number of Speakers:</label>
+                            <input type="number" id="impNum">
+                        </div>
+                        <div class="form-group">
+                            <label>Impedance Each (ohm):</label>
+                            <input type="number" id="impEach">
+                        </div>
+                    </div>
+                    <button onclick="calcSpeakerImpedance()" class="calc-button">Calculate Impedance</button>
+                    <div class="result-container">
+                        <div class="result-label">Total Impedance</div>
+                        <p id="speakerImpedanceResult" class="result-text"></p>
+                    </div>
+                </div>
+
+                <div id="decibel-change-calculator" class="calculator-card hidden">
+                    <h2>Decibel Change</h2>
+                    <p class="calculator-description">Calculate dB change for power, voltage, distance, etc.</p>
+                    <div class="form-group">
+                        <label>Type:</label>
+                        <input type="radio" id="dbPower" name="dbType" value="power"> Power (10 log)<br>
+                        <input type="radio" id="dbVolt" name="dbType" value="volt"> Voltage/Current/Distance/SPL (20 log)<br>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Reference Value:</label>
+                            <input type="number" id="dbRef">
+                        </div>
+                        <div class="form-group">
+                            <label>New Value:</label>
+                            <input type="number" id="dbNew">
+                        </div>
+                    </div>
+                    <button onclick="calcDecibelChange()" class="calc-button">Calculate dB</button>
+                    <div class="result-container">
+                        <div class="result-label">dB Change</div>
+                        <p id="decibelChangeResult" class="result-text"></p>
+                    </div>
+                </div>
+
+                <div id="spl-calculator" class="calculator-card hidden">
+                    <h2>SPL at Distance</h2>
+                    <p class="calculator-description">Calculate sound pressure level at a distance with given power.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Sensitivity (dB SPL @1W/1m):</label>
+                            <input type="number" id="splSens">
+                        </div>
+                        <div class="form-group">
+                            <label>Power (W):</label>
+                            <input type="number" id="splPower">
+                        </div>
+                        <div class="form-group">
+                            <label>Distance (m):</label>
+                            <input type="number" id="splDist">
+                        </div>
+                    </div>
+                    <button onclick="calcSPL()" class="calc-button">Calculate SPL</button>
+                    <div class="result-container">
+                        <div class="result-label">SPL (dB)</div>
+                        <p id="splResult" class="result-text"></p>
+                    </div>
+                </div>
+
+                <div id="power-calculator" class="calculator-card hidden">
+                    <h2>Power Calculator (120VAC)</h2>
+                    <p class="calculator-description">This calculator uses the formula P = V * I (Watts = Volts * Amps). It also calculates BTU as Watts * 3.41214.</p>
+                    <div class="form-group">
+                        <label>Solve for:</label>
+                        <input type="radio" id="solveWatts" name="solve" value="watts"> Watts<br>
+                        <input type="radio" id="solveAmps" name="solve" value="amps"> Amps<br>
+                        <input type="radio" id="solveVolts" name="solve" value="volts"> Volts<br>
+                    </div>
+                    <div id="wattsInputs" style="display: none;">
+                        <div class="form-group">
+                            <label>Volts:</label>
+                            <input type="number" id="voltsForWatts" value="120">
+                        </div>
+                        <div class="form-group">
+                            <label>Amps:</label>
+                            <input type="number" id="ampsForWatts">
+                        </div>
+                    </div>
+                    <div id="ampsInputs" style="display: none;">
+                        <div class="form-group">
+                            <label>Volts:</label>
+                            <input type="number" id="voltsForAmps" value="120">
+                        </div>
+                        <div class="form-group">
+                            <label>Watts:</label>
+                            <input type="number" id="wattsForAmps">
+                        </div>
+                    </div>
+                    <div id="voltsInputs" style="display: none;">
+                        <div class="form-group">
+                            <label>Amps:</label>
+                            <input type="number" id="ampsForVolts">
+                        </div>
+                        <div class="form-group">
+                            <label>Watts:</label>
+                            <input type="number" id="wattsForVolts">
+                        </div>
+                    </div>
+                    <button type="button" onclick="calculatePower()" class="calc-button">Calculate</button>
+                    <div class="result-container">
+                        <div class="result-label">Power Results</div>
+                        <div id="powerResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="ohms-law-calculator" class="calculator-card hidden">
+                    <h2>Ohm's Law Calculator</h2>
+                    <p class="calculator-description">This calculator uses the formula V = I * R (Volts = Amps * Ohms).</p>
+                    <div class="form-group">
+                        <label>Solve for:</label>
+                        <input type="radio" id="solveVoltsOhms" name="solveOhms" value="volts"> Volts<br>
+                        <input type="radio" id="solveAmpsOhms" name="solveOhms" value="amps"> Amps<br>
+                        <input type="radio" id="solveOhmsOhms" name="solveOhms" value="ohms"> Ohms<br>
+                    </div>
+                    <div id="voltsInputsOhms" style="display: none;">
+                        <div class="form-group">
+                            <label>Amps:</label>
+                            <input type="number" id="ampsForVoltsOhms">
+                        </div>
+                        <div class="form-group">
+                            <label>Ohms:</label>
+                            <input type="number" id="ohmsForVoltsOhms">
+                        </div>
+                    </div>
+                    <div id="ampsInputsOhms" style="display: none;">
+                        <div class="form-group">
+                            <label>Volts:</label>
+                            <input type="number" id="voltsForAmpsOhms">
+                        </div>
+                        <div class="form-group">
+                            <label>Ohms:</label>
+                            <input type="number" id="ohmsForAmpsOhms">
+                        </div>
+                    </div>
+                    <div id="ohmsInputsOhms" style="display: none;">
+                        <div class="form-group">
+                            <label>Volts:</label>
+                            <input type="number" id="voltsForOhmsOhms">
+                        </div>
+                        <div class="form-group">
+                            <label>Amps:</label>
+                            <input type="number" id="ampsForOhmsOhms">
+                        </div>
+                    </div>
+                    <button type="button" onclick="calculateOhms()" class="calc-button">Calculate</button>
+                    <div class="result-container">
+                        <div class="result-label">Ohm's Law Results</div>
+                        <div id="ohmsResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
+                <div id="voltage-drop-calculator" class="calculator-card hidden">
+                    <h2>Voltage Drop</h2>
+                    <p class="calculator-description">Calculate voltage drop in a cable due to resistance.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Source Voltage (V):</label>
+                            <input type="number" id="vdVoltage">
+                        </div>
+                        <div class="form-group">
+                            <label>Current (A):</label>
+                            <input type="number" id="vdCurrent">
+                        </div>
+                        <div class="form-group">
+                            <label>Cable Length (m):</label>
+                            <input type="number" id="vdLength">
+                        </div>
+                        <div class="form-group">
+                            <label>Wire Gauge (AWG):</label>
+                            <select id="vdAwg">
+                                <option value="">--Select--</option>
+                                <option value="3.3">10</option>
+                                <option value="5.2">12</option>
+                                <option value="8.3">14</option>
+                                <option value="13.2">16</option>
+                                <option value="21.0">18</option>
+                                <option value="33.5">20</option>
+                                <option value="53.3">22</option>
+                                <option value="84.2">24</option>
+                                <option value="134">26</option>
+                                <option value="213">28</option>
+                                <option value="338">30</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="calcVoltageDrop()" class="calc-button">Calculate Drop</button>
+                    <div class="result-container">
+                        <div class="result-label">Results</div>
+                        <div id="voltageDropResult" class="result-text-multi"></div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
@@ -1245,14 +1441,191 @@ function calc4KFeed() {
             resultElement.innerHTML = result_html;
         }
 
+        // Power Calculator
+        const powerRadios = document.querySelectorAll('input[name="solve"]');
+        powerRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('wattsInputs').style.display = 'none';
+                document.getElementById('ampsInputs').style.display = 'none';
+                document.getElementById('voltsInputs').style.display = 'none';
+                if (radio.value === 'watts') {
+                    document.getElementById('wattsInputs').style.display = 'block';
+                } else if (radio.value === 'amps') {
+                    document.getElementById('ampsInputs').style.display = 'block';
+                } else if (radio.value === 'volts') {
+                    document.getElementById('voltsInputs').style.display = 'block';
+                }
+            });
+        });
+
+        function calculatePower() {
+            const solve = document.querySelector('input[name="solve"]:checked');
+            const resultDiv = document.getElementById('powerResult');
+            if (!solve) {
+                resultDiv.innerHTML = `<p class='warn'>Please select what to solve for.</p>`;
+                return;
+            }
+            let watts, amps, volts;
+            if (solve.value === 'watts') {
+                volts = parseFloat(document.getElementById('voltsForWatts').value);
+                amps = parseFloat(document.getElementById('ampsForWatts').value);
+                if (isNaN(volts) || isNaN(amps)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                watts = volts * amps;
+            } else if (solve.value === 'amps') {
+                volts = parseFloat(document.getElementById('voltsForAmps').value);
+                watts = parseFloat(document.getElementById('wattsForAmps').value);
+                if (isNaN(volts) || isNaN(watts)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                amps = watts / volts;
+            } else if (solve.value === 'volts') {
+                amps = parseFloat(document.getElementById('ampsForVolts').value);
+                watts = parseFloat(document.getElementById('wattsForVolts').value);
+                if (isNaN(amps) || isNaN(watts)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                volts = watts / amps;
+            }
+            const btu = watts * 3.41214;
+            resultDiv.innerHTML = `
+                <p>Watts: ${watts.toFixed(2)}</p>
+                <p>Amps: ${amps.toFixed(2)}</p>
+                <p>Volts: ${volts.toFixed(2)}</p>
+                <p>BTU: ${btu.toFixed(2)}</p>
+            `;
+        }
+
+        // Ohm's Law Calculator
+        const ohmsRadios = document.querySelectorAll('input[name="solveOhms"]');
+        ohmsRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.getElementById('voltsInputsOhms').style.display = 'none';
+                document.getElementById('ampsInputsOhms').style.display = 'none';
+                document.getElementById('ohmsInputsOhms').style.display = 'none';
+                if (radio.value === 'volts') {
+                    document.getElementById('voltsInputsOhms').style.display = 'block';
+                } else if (radio.value === 'amps') {
+                    document.getElementById('ampsInputsOhms').style.display = 'block';
+                } else if (radio.value === 'ohms') {
+                    document.getElementById('ohmsInputsOhms').style.display = 'block';
+                }
+            });
+        });
+
+        function calculateOhms() {
+            const solve = document.querySelector('input[name="solveOhms"]:checked');
+            const resultDiv = document.getElementById('ohmsResult');
+            if (!solve) {
+                resultDiv.innerHTML = `<p class='warn'>Please select what to solve for.</p>`;
+                return;
+            }
+            let volts, amps, ohms;
+            if (solve.value === 'volts') {
+                amps = parseFloat(document.getElementById('ampsForVoltsOhms').value);
+                ohms = parseFloat(document.getElementById('ohmsForVoltsOhms').value);
+                if (isNaN(amps) || isNaN(ohms)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                volts = amps * ohms;
+            } else if (solve.value === 'amps') {
+                volts = parseFloat(document.getElementById('voltsForAmpsOhms').value);
+                ohms = parseFloat(document.getElementById('ohmsForAmpsOhms').value);
+                if (isNaN(volts) || isNaN(ohms)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                amps = volts / ohms;
+            } else if (solve.value === 'ohms') {
+                volts = parseFloat(document.getElementById('voltsForOhmsOhms').value);
+                amps = parseFloat(document.getElementById('ampsForOhmsOhms').value);
+                if (isNaN(volts) || isNaN(amps)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                ohms = volts / amps;
+            }
+            resultDiv.innerHTML = `
+                <p>Volts: ${volts.toFixed(2)}</p>
+                <p>Amps: ${amps.toFixed(2)}</p>
+                <p>Ohms: ${ohms.toFixed(2)}</p>
+            `;
+        }
+
+        // Voltage Drop Calculator
+        function calcVoltageDrop() {
+            const voltage = parseFloat(document.getElementById('vdVoltage').value);
+            const current = parseFloat(document.getElementById('vdCurrent').value);
+            const length = parseFloat(document.getElementById('vdLength').value);
+            const awgRes = parseFloat(document.getElementById('vdAwg').value);
+            const resultElement = document.getElementById('voltageDropResult');
+            if (isNaN(voltage) || isNaN(current) || isNaN(length) || isNaN(awgRes)) {
+                return showDynamicAlert("Please fill in all fields.", "voltageDropResult");
+            }
+            const resistance = (awgRes / 1000) * length;
+            const drop = current * resistance;
+            const percent = (drop / voltage) * 100;
+            let resultHtml = `<p>Cable Resistance: <strong>${resistance.toFixed(2)} ohm</strong></p>`;
+            resultHtml += `<p>Voltage Drop: <strong>${drop.toFixed(2)} V</strong></p>`;
+            resultHtml += `<p>Percentage Drop: <strong>${percent.toFixed(2)}%</strong></p>`;
+            resultElement.innerHTML = resultHtml;
+        }
+
+        // Speaker Impedance Calculator
+        function calcSpeakerImpedance() {
+            const config = document.querySelector('input[name="impConfig"]:checked');
+            const num = parseFloat(document.getElementById('impNum').value);
+            const each = parseFloat(document.getElementById('impEach').value);
+            const resultElement = document.getElementById('speakerImpedanceResult');
+            if (!config || isNaN(num) || isNaN(each) || num <= 0 || each <= 0) {
+                return showDynamicAlert("Please select configuration and enter valid positive numbers.", "speakerImpedanceResult");
+            }
+            let total;
+            if (config.value === 'series') {
+                total = num * each;
+            } else {
+                total = each / num;
+            }
+            resultElement.innerText = `${total.toFixed(2)} ohm`;
+        }
+
+        // Decibel Change Calculator
+        function calcDecibelChange() {
+            const type = document.querySelector('input[name="dbType"]:checked');
+            const ref = parseFloat(document.getElementById('dbRef').value);
+            const newVal = parseFloat(document.getElementById('dbNew').value);
+            const resultElement = document.getElementById('decibelChangeResult');
+            if (!type || isNaN(ref) || isNaN(newVal) || ref <= 0 || newVal <= 0) {
+                return showDynamicAlert("Please select type and enter valid positive numbers.", "decibelChangeResult");
+            }
+            const ratio = newVal / ref;
+            let db;
+            if (type.value === 'power') {
+                db = 10 * Math.log10(ratio);
+            } else {
+                db = 20 * Math.log10(ratio);
+            }
+            resultElement.innerText = `${db.toFixed(2)} dB`;
+        }
+
+        // SPL Calculator
+        function calcSPL() {
+            const sens = parseFloat(document.getElementById('splSens').value);
+            const power = parseFloat(document.getElementById('splPower').value);
+            const dist = parseFloat(document.getElementById('splDist').value);
+            const resultElement = document.getElementById('splResult');
+            if (isNaN(sens) || isNaN(power) || isNaN(dist) || power <= 0 || dist <= 0) {
+                return showDynamicAlert("Please enter valid positive numbers.", "splResult");
+            }
+            const spl = sens + 10 * Math.log10(power) - 20 * Math.log10(dist);
+            resultElement.innerText = `${spl.toFixed(2)} dB SPL`;
+        }
 
     </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('Service Worker registered'))
-      .catch((err) => console.error('Service Worker registration failed', err));
-  }
-</script>
 </body>
 </html>
