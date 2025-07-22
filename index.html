@@ -252,14 +252,13 @@
         }
 
         @media (max-width: 900px) {
-            body { padding: 0; }
-            .container { height: 100vh; max-height: none; border-radius: 0; }
-            .main-layout { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--charcoal-light); }
-            .content { padding: 2rem; }
-            h2 { font-size: 2rem; }
-        }
+    /* Existing styles... */
 
+            .sidebar {
+                max-height: 30vh; /* Limit sidebar to 30% of viewport height; adjust as needed */
+                overflow-y: auto; /* Enable scrolling if content overflows */
+            }
+        }
     </style>
 </head>
 <body>
