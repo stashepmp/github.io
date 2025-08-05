@@ -981,21 +981,21 @@
             const calculatorCards = document.querySelectorAll('.calculator-card');
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.querySelector('.sidebar');
+
             function switchView(targetId) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${targetId}`) {
-                        link.classList.add('active');
-                    }
-                });
                 calculatorCards.forEach(card => {
-                    if (card.id === targetId) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
+                    card.classList.add('hidden');
                 });
+                const targetCard = document.getElementById(targetId);
+                if (targetCard) {
+                    targetCard.classList.remove('hidden');
+                }
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${targetId}`);
+                });
+                window.location.hash = targetId;
             }
+
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1006,22 +1006,60 @@
                     }
                 });
             });
-            const initialActiveLink = document.querySelector('.nav-links a.active');
-            if (initialActiveLink) {
-                const initialTargetId = initialActiveLink.getAttribute('href').substring(1);
-                switchView(initialTargetId);
-            }
+
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('collapsed');
             });
+
             window.addEventListener('resize', () => {
                 if (window.innerWidth > 900) {
                     sidebar.classList.remove('collapsed');
-                } else if (!sidebar.classList.contains('collapsed')) {
+                } else {
                     sidebar.classList.add('collapsed');
                 }
             });
+
+            window.addEventListener('hashchange', () => {
+                const targetId = window.location.hash.substring(1) || 'brightness-calculator';
+                switchView(targetId);
+            });
+
+            const initialHash = window.location.hash.substring(1) || 'brightness-calculator';
+            switchView(initialHash);
+
+            const powerRadios = document.querySelectorAll('input[name="solve"]');
+            powerRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    document.getElementById('wattsInputs').style.display = 'none';
+                    document.getElementById('ampsInputs').style.display = 'none';
+                    document.getElementById('voltsInputs').style.display = 'none';
+                    if (radio.value === 'watts') {
+                        document.getElementById('wattsInputs').style.display = 'block';
+                    } else if (radio.value === 'amps') {
+                        document.getElementById('ampsInputs').style.display = 'block';
+                    } else if (radio.value === 'volts') {
+                        document.getElementById('voltsInputs').style.display = 'block';
+                    }
+                });
+            });
+
+            const ohmsRadios = document.querySelectorAll('input[name="solveOhms"]');
+            ohmsRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    document.getElementById('voltsInputsOhms').style.display = 'none';
+                    document.getElementById('ampsInputsOhms').style.display = 'none';
+                    document.getElementById('ohmsInputsOhms').style.display = 'none';
+                    if (radio.value === 'volts') {
+                        document.getElementById('voltsInputsOhms').style.display = 'block';
+                    } else if (radio.value === 'amps') {
+                        document.getElementById('ampsInputsOhms').style.display = 'block';
+                    } else if (radio.value === 'ohms') {
+                        document.getElementById('ohmsInputsOhms').style.display = 'block';
+                    }
+                });
+            });
         });
+
         function showDynamicAlert(message, elementId) {
             const resultElement = document.getElementById(elementId);
             if (resultElement) {
@@ -1030,6 +1068,7 @@
                 alert(message);
             }
         }
+
         function calcBrightness() {
             const ambientFc = parseFloat(document.getElementById('ambientFc').value);
             const contrastSpec = parseFloat(document.getElementById('contrastSpec').value);
@@ -1039,6 +1078,7 @@
             const brightness = ambientFc * contrastSpec;
             resultElement.innerText = `${brightness.toFixed(2)} ft-L`;
         }
+
         function calcLumens() {
             const screenDiagonal = parseFloat(document.getElementById('screenDiagonal').value);
             const aspectRatio = document.getElementById('aspectRatio').value;
@@ -1055,6 +1095,7 @@
             const requiredLumens = requiredFootLamberts * screenAreaSqFt;
             resultElement.innerText = `${requiredLumens.toFixed(0)} lumens`;
         }
+
         function calcAmbientLight() {
             const projectorLumens = parseFloat(document.getElementById('projectorLumens').value);
             const screenDiagonal = parseFloat(document.getElementById('screenDiagonalAmbient').value);
@@ -1074,6 +1115,7 @@
             resultHtml += `<p>Max for Video (80:1): <strong>${(footLamberts / 80).toFixed(2)} fc</strong></p>`;
             resultElement.innerHTML = resultHtml;
         }
+
         function calcMinScreenDiagonal() {
             const projectorLumens = parseFloat(document.getElementById('projectorLumensMinDiagonal').value);
             const ambientFc = parseFloat(document.getElementById('ambientFcMinDiagonal').value);
@@ -1096,6 +1138,7 @@
             resultHtml += `<p>For Video (80:1): <strong>${calculateDiagonal(80)}</strong></p>`;
             resultElement.innerHTML = resultHtml;
         }
+
         function calcViewingDistance() {
             const screenWidth = parseFloat(document.getElementById('screenWidthViewing').value);
             const contentType = document.getElementById('contentTypeViewing').value;
@@ -1109,6 +1152,7 @@
             else { return showDynamicAlert("Invalid content type selected.", "viewingDistanceResult"); }
             resultElement.innerText = `${minDistance.toFixed(1)} to ${maxDistance.toFixed(1)} inches`;
         }
+
         function calcThrowDistance() {
             const screenWidth = parseFloat(document.getElementById('screenWidthThrow').value);
             const throwRatioMin = parseFloat(document.getElementById('throwRatioMin').value);
@@ -1121,6 +1165,7 @@
             const maxThrowDistance = (screenWidth / 12) * throwRatioMax;
             resultElement.innerText = `${minThrowDistance.toFixed(2)} ft to ${maxThrowDistance.toFixed(2)} ft`;
         }
+
         function calcScreenSize() {
             const viewerDistance = parseFloat(document.getElementById('viewerDistance').value);
             const contentType = document.getElementById('contentTypeScreen').value;
@@ -1139,6 +1184,7 @@
             const screenDiagonalIn = imageHeightIn * Math.sqrt(Math.pow(widthRatio, 2) + Math.pow(heightRatio, 2)) / heightRatio;
             resultElement.innerText = `${screenDiagonalIn.toFixed(1)} inches`;
         }
+
         function calcImageHeight() {
             const screenDiagonal = parseFloat(document.getElementById('screenDiagonalHeight').value);
             const aspectRatio = document.getElementById('aspectRatioHeight').value;
@@ -1151,6 +1197,7 @@
             const screenTopHeightFt = bottomHeightFt + (imageHeightIn / 12);
             resultElement.innerText = `Image: ${imageHeightIn.toFixed(1)} in tall. Top of screen: ${screenTopHeightFt.toFixed(1)} ft high.`;
         }
+
         function calcLensRatio() {
             const screenWidth = parseFloat(document.getElementById('screenWidthLens').value);
             const projectorDistance = parseFloat(document.getElementById('projectorDistance').value);
@@ -1161,14 +1208,13 @@
             const lensRatio = projectorDistance / screenWidthFt;
             resultElement.innerText = `${lensRatio.toFixed(2)}:1`;
         }
+
         function calc4KFeed() {
             const width = parseInt(document.getElementById('resolutionWidth').value);
             const height = parseInt(document.getElementById('resolutionHeight').value);
             const resultElement = document.getElementById('4kFeedResult');
             const graphicElement = document.getElementById('resolutionGraphic');
-            if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
-                return showDynamicAlert("Please enter valid width and height.", "4kFeedResult");
-            }
+            if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) { return showDynamicAlert("Please enter valid width and height.", "4kFeedResult"); }
             const total_pixels = width * height;
             const total_mp = (total_pixels / 1000000).toFixed(3);
             const max_pixels_per_feed = 3840 * 2160;
@@ -1197,127 +1243,12 @@
             resultElement.innerHTML = text_html;
             graphicElement.innerHTML = visual_html;
         }
-        function addSpeakerGroup() {
-            const container = document.getElementById('speakerInputs');
-            const group = document.createElement('div');
-            group.className = 'form-grid speaker-group';
-            group.innerHTML = `
-                <div class="form-group">
-                    <label>Quantity of Speakers</label>
-                    <input type="number" class="speakerQty">
-                </div>
-                <div class="form-group">
-                    <label>Tap Setting per Speaker (W)</label>
-                    <input type="number" class="speakerTap">
-                </div>
-            `;
-            container.appendChild(group);
-        }
-        function calcAmpLoad() {
-            const ampWattage = parseFloat(document.getElementById('ampWattage').value);
-            const resultElement = document.getElementById('ampLoadResult');
-            if (isNaN(ampWattage) || ampWattage <= 0) { return showDynamicAlert("Please enter a valid amplifier wattage.", "ampLoadResult"); }
-            const qtyFields = document.querySelectorAll('.speakerQty');
-            const tapFields = document.querySelectorAll('.speakerTap');
-            let totalLoad = 0;
-            for (let i = 0; i < qtyFields.length; i++) {
-                const qty = parseFloat(qtyFields[i].value);
-                const tap = parseFloat(tapFields[i].value);
-                if (!isNaN(qty) && !isNaN(tap)) { totalLoad += qty * tap; }
-            }
-            const percentUsed = (totalLoad / ampWattage) * 100;
-            let resultHtml = `<p>Total Speaker Load: <strong>${totalLoad.toFixed(1)} W</strong></p>`;
-            resultHtml += `<p>Amplifier Capacity Used: <strong>${percentUsed.toFixed(1)}%</strong></p>`;
-            if (percentUsed > 80) { resultHtml += `<p class='warn'>Warning: Load exceeds 80% of amplifier capacity!</p>`; }
-            if (percentUsed > 100) { resultHtml = `<p class='warn'>Error: Load exceeds 100% of amplifier capacity!</p>`; }
-            resultElement.innerHTML = resultHtml;
-        }
-        function calcSpeakerCoverage() {
-            const speakerAngle = parseFloat(document.getElementById('speakerAngle').value);
-            const speakerHeight = parseFloat(document.getElementById('speakerHeight').value);
-            const roomWidth = parseFloat(document.getElementById('roomWidthAudio').value);
-            const roomDepth = parseFloat(document.getElementById('roomDepth').value);
-            const resultElement = document.getElementById('speakerCoverageResult');
-            if (isNaN(speakerAngle) || isNaN(speakerHeight) || isNaN(roomWidth) || isNaN(roomDepth)) { return showDynamicAlert("Please fill in all fields.", "speakerCoverageResult"); }
-            if (speakerAngle <= 0 || speakerHeight <= 0 || roomWidth <= 0 || roomDepth <= 0) { return showDynamicAlert("All input values must be positive.", "speakerCoverageResult"); }
-            const coverageRadius = speakerHeight * Math.tan(speakerAngle / 2 * Math.PI / 180);
-            const coverageDiameter = coverageRadius * 2;
-            const speakerArea = Math.PI * Math.pow(coverageRadius, 2);
-            const roomArea = roomWidth * roomDepth;
-            const speakersNeeded = Math.ceil(roomArea / speakerArea);
-            let resultHtml = `<p>Single Speaker Coverage Diameter: <strong>${coverageDiameter.toFixed(1)} feet</strong></p>`;
-            resultHtml += `<p>Estimated Speakers for Room: <strong>${speakersNeeded}</strong></p>`;
-            resultElement.innerHTML = resultHtml;
-        }
-        function calcDisplaySize() {
-            const farthestViewerFt = parseFloat(document.getElementById('farthestViewer').value);
-            const useCase = document.getElementById('useCase').value;
-            const resultElement = document.getElementById('displaySizeResult');
-            if (isNaN(farthestViewerFt) || useCase === "") {
-                return showDynamicAlert("Please fill in farthest viewer and use case.", "displaySizeResult");
-            }
-            if (farthestViewerFt <= 0) {
-                return showDynamicAlert("Viewer distance must be positive.", "displaySizeResult");
-            }
-            let minImageHeightFt;
-            if (useCase === "ADM") {
-                minImageHeightFt = farthestViewerFt / 6;
-            } else if (useCase === "BDM") {
-                minImageHeightFt = farthestViewerFt / 8;
-            } else {
-                return showDynamicAlert("Invalid use case selected.", "displaySizeResult");
-            }
-            const minImageHeightIn = minImageHeightFt * 12;
-            const diagonalIn = minImageHeightIn * Math.sqrt(16*16 + 9*9) / 9;
-            const arcMinuteToRadians = Math.PI / (180 * 60);
-            let recommendedTextHeightInches;
-            if (useCase === "ADM") {
-                recommendedTextHeightInches = farthestViewerFt * 12 * Math.tan(10 * arcMinuteToRadians);
-            } else {
-                recommendedTextHeightInches = farthestViewerFt * 12 * Math.tan(15 * arcMinuteToRadians);
-            }
-            const suggestedFontSizePoints = recommendedTextHeightInches * 72;
-            let resultHtml = `<p>Min. Image Height: <strong>${minImageHeightFt.toFixed(1)} ft (${minImageHeightIn.toFixed(1)} in)</strong></p>`;
-            resultHtml += `<p>Rec. 16:9 Diagonal: <strong>${diagonalIn.toFixed(1)} inches</strong></p>`;
-            resultHtml += `<p>Min. Text Height: <strong>${recommendedTextHeightInches.toFixed(2)} inches</strong></p>`;
-            resultHtml += `<p>Rec. Font Size: <strong>${suggestedFontSizePoints.toFixed(0)} points</strong></p>`;
-            resultElement.innerHTML = resultHtml;
-        }
-        function calcBandwidth() {
-            const resolution = document.getElementById('bandwidthResolution').value;
-            const fps = parseFloat(document.getElementById('bandwidthFps').value);
-            const compression = document.getElementById('bandwidthCompression').value;
-            const quantity = parseFloat(document.getElementById('bandwidthQuantity').value);
-            const resultElement = document.getElementById('bandwidthResult');
-            if (!resolution || isNaN(fps) || !compression || isNaN(quantity)) {
-                return showDynamicAlert("Please fill in all fields.", "bandwidthResult");
-            }
-            let baseRate;
-            switch(resolution) {
-                case '720p': baseRate = 3; break;
-                case '1080p': baseRate = 5; break;
-                case '4K': baseRate = 15; break;
-                default: baseRate = 5;
-            }
-            let compressionMultiplier;
-            switch(compression) {
-                case 'h264': compressionMultiplier = 1; break;
-                case 'h265': compressionMultiplier = 0.6; break;
-                case 'jpeg2000': compressionMultiplier = 2.5; break;
-                default: compressionMultiplier = 1;
-            }
-            const frameRateMultiplier = fps / 30;
-            const singleStreamBw = baseRate * compressionMultiplier * frameRateMultiplier;
-            const totalBw = singleStreamBw * quantity;
-            resultElement.innerText = `${totalBw.toFixed(2)} Mbps`;
-        }
+
         function calcPixelPitch() {
             const width_str = document.getElementById('pitchWidth').value;
             const aspect = document.querySelector('input[name="pitch-aspect"]:checked').value;
             const resultElement = document.getElementById('pixelPitchResult');
-            if (!width_str) {
-                return showDynamicAlert("Please enter desired width.", "pixelPitchResult");
-            }
+            if (!width_str) { return showDynamicAlert("Please enter desired width.", "pixelPitchResult"); }
             const parts = width_str.split('-');
             const ft = parseInt(parts[0]) || 0;
             const inch = parseInt(parts[1]) || 0;
@@ -1343,6 +1274,7 @@
             }
             resultElement.innerHTML = result_html;
         }
+
         function calcTextVisibility() {
             const diagonal = parseFloat(document.getElementById('textDiagonal').value);
             const aspect = document.getElementById('textAspectRatio').value;
@@ -1376,6 +1308,7 @@
             result_html += `<p>Maximum double-spaced lines: ${num_double}</p>`;
             resultElement.innerHTML = result_html;
         }
+
         function calcMMtoInches() {
             const mmWidth = parseFloat(document.getElementById('mmWidth').value);
             const mmHeight = parseFloat(document.getElementById('mmHeight').value);
@@ -1390,8 +1323,182 @@
             const inchesHeight = (mmHeight / 25.4).toFixed(2);
             resultElement.innerText = `Width: ${inchesWidth} in, Height: ${inchesHeight} in`;
         }
-        const powerRadios = document.querySelectorAll('input[name="solve"]');
-        powerRadios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                document.getElementById('wattsInputs').style.display = 'none';
-                document.getElementById('
+
+        function calculatePower() {
+            const solve = document.querySelector('input[name="solve"]:checked');
+            const resultDiv = document.getElementById('powerResult');
+            if (!solve) {
+                resultDiv.innerHTML = `<p class='warn'>Please select what to solve for.</p>`;
+                return;
+            }
+            let watts, amps, volts;
+            if (solve.value === 'watts') {
+                volts = parseFloat(document.getElementById('voltsForWatts').value);
+                amps = parseFloat(document.getElementById('ampsForWatts').value);
+                if (isNaN(volts) || isNaN(amps)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                watts = volts * amps;
+            } else if (solve.value === 'amps') {
+                volts = parseFloat(document.getElementById('voltsForAmps').value);
+                watts = parseFloat(document.getElementById('wattsForAmps').value);
+                if (isNaN(volts) || isNaN(watts)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                amps = watts / volts;
+            } else if (solve.value === 'volts') {
+                amps = parseFloat(document.getElementById('ampsForVolts').value);
+                watts = parseFloat(document.getElementById('wattsForVolts').value);
+                if (isNaN(amps) || isNaN(watts)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                volts = watts / amps;
+            }
+            const btu = watts * 3.41214;
+            resultDiv.innerHTML = `
+                <p>Watts: ${watts.toFixed(2)}</p>
+                <p>Amps: ${amps.toFixed(2)}</p>
+                <p>Volts: ${volts.toFixed(2)}</p>
+                <p>BTU: ${btu.toFixed(2)}</p>
+            `;
+        }
+
+        function calculateOhms() {
+            const solve = document.querySelector('input[name="solveOhms"]:checked');
+            const resultDiv = document.getElementById('ohmsResult');
+            if (!solve) {
+                resultDiv.innerHTML = `<p class='warn'>Please select what to solve for.</p>`;
+                return;
+            }
+            let volts, amps, ohms;
+            if (solve.value === 'volts') {
+                amps = parseFloat(document.getElementById('ampsForVoltsOhms').value);
+                ohms = parseFloat(document.getElementById('ohmsForVoltsOhms').value);
+                if (isNaN(amps) || isNaN(ohms)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                volts = amps * ohms;
+            } else if (solve.value === 'amps') {
+                volts = parseFloat(document.getElementById('voltsForAmpsOhms').value);
+                ohms = parseFloat(document.getElementById('ohmsForAmpsOhms').value);
+                if (isNaN(volts) || isNaN(ohms)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                amps = volts / ohms;
+            } else if (solve.value === 'ohms') {
+                volts = parseFloat(document.getElementById('voltsForOhmsOhms').value);
+                amps = parseFloat(document.getElementById('ampsForOhmsOhms').value);
+                if (isNaN(volts) || isNaN(amps)) {
+                    resultDiv.innerHTML = `<p class='warn'>Please enter valid numbers.</p>`;
+                    return;
+                }
+                ohms = volts / amps;
+            }
+            resultDiv.innerHTML = `
+                <p>Volts: ${volts.toFixed(2)}</p>
+                <p>Amps: ${amps.toFixed(2)}</p>
+                <p>Ohms: ${ohms.toFixed(2)}</p>
+            `;
+        }
+
+        function calcVoltageDrop() {
+            const voltage = parseFloat(document.getElementById('vdVoltage').value);
+            const current = parseFloat(document.getElementById('vdCurrent').value);
+            const length = parseFloat(document.getElementById('vdLength').value);
+            const awgRes = parseFloat(document.getElementById('vdAwg').value);
+            const resultElement = document.getElementById('voltageDropResult');
+            if (isNaN(voltage) || isNaN(current) || isNaN(length) || isNaN(awgRes)) {
+                return showDynamicAlert("Please fill in all fields.", "voltageDropResult");
+            }
+            const resistance = (awgRes / 1000) * length;
+            const drop = current * resistance;
+            const percent = (drop / voltage) * 100;
+            let resultHtml = `<p>Cable Resistance: <strong>${resistance.toFixed(2)} ohm</strong></p>`;
+            resultHtml += `<p>Voltage Drop: <strong>${drop.toFixed(2)} V</strong></p>`;
+            resultHtml += `<p>Percentage Drop: <strong>${percent.toFixed(2)}%</strong></p>`;
+            resultElement.innerHTML = resultHtml;
+        }
+
+        function calcSpeakerImpedance() {
+            const config = document.querySelector('input[name="impConfig"]:checked');
+            const num = parseFloat(document.getElementById('impNum').value);
+            const each = parseFloat(document.getElementById('impEach').value);
+            const resultElement = document.getElementById('speakerImpedanceResult');
+            if (!config || isNaN(num) || isNaN(each) || num <= 0 || each <= 0) {
+                return showDynamicAlert("Please select configuration and enter valid positive numbers.", "speakerImpedanceResult");
+            }
+            let total;
+            if (config.value === 'series') {
+                total = num * each;
+            } else {
+                total = each / num;
+            }
+            resultElement.innerText = `${total.toFixed(2)} ohm`;
+        }
+
+        function calcDecibelChange() {
+            const type = document.querySelector('input[name="dbType"]:checked');
+            const ref = parseFloat(document.getElementById('dbRef').value);
+            const newVal = parseFloat(document.getElementById('dbNew').value);
+            const resultElement = document.getElementById('decibelChangeResult');
+            if (!type || isNaN(ref) || isNaN(newVal) || ref <= 0 || newVal <= 0) {
+                return showDynamicAlert("Please select type and enter valid positive numbers.", "decibelChangeResult");
+            }
+            const ratio = newVal / ref;
+            let db;
+            if (type.value === 'power') {
+                db = 10 * Math.log10(ratio);
+            } else {
+                db = 20 * Math.log10(ratio);
+            }
+            resultElement.innerText = `${db.toFixed(2)} dB`;
+        }
+
+        function calcSPL() {
+            const sens = parseFloat(document.getElementById('splSens').value);
+            const power = parseFloat(document.getElementById('splPower').value);
+            const dist = parseFloat(document.getElementById('splDist').value);
+            const resultElement = document.getElementById('splResult');
+            if (isNaN(sens) || isNaN(power) || isNaN(dist) || power <= 0 || dist <= 0) {
+                return showDynamicAlert("Please enter valid positive numbers.", "splResult");
+            }
+            const spl = sens + 10 * Math.log10(power) - 20 * Math.log10(dist);
+            resultElement.innerText = `${spl.toFixed(2)} dB SPL`;
+        }
+
+        function calcBandwidth() {
+            const resolution = document.getElementById('bandwidthResolution').value;
+            const fps = parseFloat(document.getElementById('bandwidthFps').value);
+            const compression = document.getElementById('bandwidthCompression').value;
+            const quantity = parseFloat(document.getElementById('bandwidthQuantity').value);
+            const resultElement = document.getElementById('bandwidthResult');
+            if (!resolution || isNaN(fps) || !compression || isNaN(quantity)) {
+                return showDynamicAlert("Please fill in all fields.", "bandwidthResult");
+            }
+            let baseRate;
+            switch(resolution) {
+                case '720p': baseRate = 3; break;
+                case '1080p': baseRate = 5; break;
+                case '4K': baseRate = 15; break;
+                default: baseRate = 5;
+            }
+            let compressionMultiplier;
+            switch(compression) {
+                case 'h264': compressionMultiplier = 1; break;
+                case 'h265': compressionMultiplier = 0.6; break;
+                case 'jpeg2000': compressionMultiplier = 2.5; break;
+                default: compressionMultiplier = 1;
+            }
+            const frameRateMultiplier = fps / 30;
+            const singleStreamBw = baseRate * compressionMultiplier * frameRateMultiplier;
+            const totalBw = singleStreamBw * quantity;
+            resultElement.innerText = `${totalBw.toFixed(2)} Mbps`;
+        }
+    </script>
+</body>
+</html>
